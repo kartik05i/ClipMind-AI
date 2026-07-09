@@ -1,13 +1,10 @@
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.models.user import User
 from app.schemas.auth import RegisterRequest
-from app.schemas.login import LoginRequest
-from app.core.security import hash_password
+from app.core.security import hash_password, verify_password
 from app.utils.jwt import create_access_token
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def register_user(
@@ -37,28 +34,28 @@ def register_user(
 
 
 def login_user(
-    user_data: LoginRequest,
+    form_data: OAuth2PasswordRequestForm,
     db: Session
 ):
 
     user = db.query(User).filter(
-        User.email == user_data.email
+        User.email == form_data.username
     ).first()
 
     if not user:
         return None
 
-    if not pwd_context.verify(
-        user_data.password,
+    if not verify_password(
+        form_data.password,
         user.hashed_password
     ):
         return None
 
-    token = create_access_token(
+    access_token = create_access_token(
         {"sub": user.email}
     )
 
     return {
-        "access_token": token,
+        "access_token": access_token,
         "token_type": "bearer"
     }

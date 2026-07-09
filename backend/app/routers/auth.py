@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
 from app.schemas.auth import RegisterRequest
-from app.services.auth_service import register_user
-from app.schemas.login import LoginRequest
-from app.services.auth_service import login_user
+from app.services.auth_service import register_user, login_user
+from app.core.dependencies import get_current_user
+from app.models.user import User
 
 router = APIRouter(
     prefix="/auth",
@@ -22,7 +23,6 @@ def register(
     new_user = register_user(db, user)
 
     if new_user is None:
-
         return {
             "message": "Email already exists"
         }
@@ -31,13 +31,15 @@ def register(
         "message": "User registered successfully",
         "user_id": new_user.id
     }
+
+
 @router.post("/login")
 def login(
-    user: LoginRequest,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
 
-    result = login_user(user, db)
+    result = login_user(form_data, db)
 
     if result is None:
         raise HTTPException(
@@ -46,3 +48,16 @@ def login(
         )
 
     return result
+
+
+@router.get("/me")
+def get_me(
+    current_user: User = Depends(get_current_user)
+):
+    return {
+        "id": current_user.id,
+        "name": current_user.name,
+        "email": current_user.email,
+        "role": current_user.role,
+        "is_active": current_user.is_active
+    }
