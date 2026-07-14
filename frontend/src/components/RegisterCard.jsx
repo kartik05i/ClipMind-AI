@@ -1,6 +1,55 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 
+import { registerUser } from "../services/authService";
+
 function RegisterCard() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    role: "Learner",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleRegister = async () => {
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    try {
+      const data = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+      };
+
+      const response = await registerUser(data);
+
+      alert(response.message);
+
+      navigate("/");
+    } catch (error) {
+      alert(
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        "Registration failed"
+      );
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 w-[420px]">
 
@@ -25,17 +74,28 @@ function RegisterCard() {
 
       <input
         type="text"
+        name="name"
         placeholder="Full Name"
+        value={formData.name}
+        onChange={handleChange}
         className="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4"
       />
 
       <input
         type="email"
+        name="email"
         placeholder="Email"
+        value={formData.email}
+        onChange={handleChange}
         className="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4"
       />
 
-      <select className="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4">
+      <select
+        name="role"
+        value={formData.role}
+        onChange={handleChange}
+        className="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4"
+      >
         <option>Learner</option>
         <option>Educator</option>
         <option>Content Creator</option>
@@ -43,13 +103,19 @@ function RegisterCard() {
 
       <input
         type="password"
+        name="password"
         placeholder="Password"
+        value={formData.password}
+        onChange={handleChange}
         className="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4"
       />
 
       <input
         type="password"
+        name="confirmPassword"
         placeholder="Confirm Password"
+        value={formData.confirmPassword}
+        onChange={handleChange}
         className="w-full border border-gray-300 rounded-xl px-4 py-3"
       />
 
@@ -58,13 +124,19 @@ function RegisterCard() {
         I agree to the Terms & Conditions
       </label>
 
-      <button className="w-full bg-blue-600 text-white py-3 rounded-xl mt-6 hover:bg-blue-700 transition">
+      <button
+        onClick={handleRegister}
+        className="w-full bg-blue-600 text-white py-3 rounded-xl mt-6 hover:bg-blue-700 transition"
+      >
         Create Account
       </button>
 
       <p className="text-center text-gray-600 mt-6">
         Already have an account?{" "}
-        <button className="text-blue-600 font-semibold hover:underline">
+        <button
+          onClick={() => navigate("/")}
+          className="text-blue-600 font-semibold hover:underline"
+        >
           Login
         </button>
       </p>
