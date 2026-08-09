@@ -1,7 +1,46 @@
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router-dom";
+
+import { loginUser } from "../services/authService";
 
 function LoginCard() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Please enter email and password.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await loginUser(
+        email,
+        password
+      );
+
+      alert("Login Successful!");
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+
+      if (error.response?.data?.detail) {
+        alert(error.response.data.detail);
+      } else {
+        alert("Login failed");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 w-[420px]">
       {/* Heading */}
@@ -39,6 +78,8 @@ function LoginCard() {
         <input
           type="email"
           placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
@@ -52,6 +93,8 @@ function LoginCard() {
         <input
           type="password"
           placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
@@ -67,26 +110,30 @@ function LoginCard() {
         </label>
 
         <Link
-            to="/forgot-password"
-            className="text-sm text-blue-600 hover:underline"
+          to="/forgot-password"
+          className="text-sm text-blue-600 hover:underline"
         >
-            Forgot Password?
+          Forgot Password?
         </Link>
       </div>
 
       {/* Login Button */}
-      <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold mt-6 transition duration-300">
-        Login
+      <button
+        onClick={handleLogin}
+        disabled={loading}
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold mt-6 transition duration-300 disabled:bg-blue-400"
+      >
+        {loading ? "Logging in..." : "Login"}
       </button>
 
       {/* Register */}
       <p className="text-center text-gray-600 mt-6">
         Don't have an account?{" "}
         <Link
-            to="/register"
-            className="text-blue-600 font-semibold hover:underline"
+          to="/register"
+          className="text-blue-600 font-semibold hover:underline"
         >
-            Register
+          Register
         </Link>
       </p>
     </div>

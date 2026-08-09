@@ -33,3 +33,16 @@ frontend/.env
 # ==========================
 .DS_Store
 Thumbs.db
+
+# ==========================
+# Uploaded / Processed Media
+# ==========================
+
+backend/uploads/
+backend/processed/
+
+# ==========================
+# Project Archives
+# ==========================
+
+*.zip

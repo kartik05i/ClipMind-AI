@@ -1,6 +1,6 @@
 from faster_whisper import WhisperModel
 
-# Load the model once when the application starts
+# Load the model once
 model = WhisperModel(
     "base",
     device="cpu",
@@ -8,16 +8,23 @@ model = WhisperModel(
 )
 
 
-def generate_transcript(audio_path: str) -> str:
+def generate_transcript(audio_path: str):
     """
-    Generate transcript from an audio file.
+    Generate transcript along with timestamps.
     """
 
     segments, info = model.transcribe(audio_path)
 
     transcript = ""
+    timestamp_data = []
 
     for segment in segments:
         transcript += segment.text + " "
 
-    return transcript.strip()
+        timestamp_data.append({
+            "start": round(segment.start, 2),
+            "end": round(segment.end, 2),
+            "text": segment.text.strip()
+        })
+
+    return transcript.strip(), timestamp_data

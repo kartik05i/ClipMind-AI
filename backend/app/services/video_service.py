@@ -64,7 +64,14 @@ def save_video(
         # -----------------------------
         # Step 2: Generate Transcript
         # -----------------------------
-        transcript = generate_transcript(audio_path)
+        transcript, timestamps = generate_transcript(audio_path)
+
+        print("\n========== TIMESTAMPS ==========")
+
+        for segment in timestamps:
+            print(segment)
+
+        print("================================\n")
 
         save_transcript(
             db=db,

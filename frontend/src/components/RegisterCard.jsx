@@ -7,6 +7,8 @@ import { registerUser } from "../services/authService";
 function RegisterCard() {
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,12 +25,24 @@ function RegisterCard() {
   };
 
   const handleRegister = async () => {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      alert("Please fill all fields.");
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match");
       return;
     }
 
     try {
+      setLoading(true);
+
       const data = {
         name: formData.name,
         email: formData.email,
@@ -36,23 +50,30 @@ function RegisterCard() {
         role: formData.role,
       };
 
+      console.log("Sending:", data);
+
       const response = await registerUser(data);
 
-      alert(response.message);
+      console.log("Response:", response);
+
+      alert("Registration Successful!");
 
       navigate("/");
     } catch (error) {
+      console.error(error);
+
       alert(
         error.response?.data?.detail ||
-        error.response?.data?.message ||
-        "Registration failed"
+          error.message ||
+          "Registration failed"
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 w-[420px]">
-
       <h2 className="text-3xl font-bold text-gray-900">
         Create Your Account
       </h2>
@@ -126,9 +147,10 @@ function RegisterCard() {
 
       <button
         onClick={handleRegister}
-        className="w-full bg-blue-600 text-white py-3 rounded-xl mt-6 hover:bg-blue-700 transition"
+        disabled={loading}
+        className="w-full bg-blue-600 text-white py-3 rounded-xl mt-6 hover:bg-blue-700 transition disabled:bg-blue-400"
       >
-        Create Account
+        {loading ? "Creating Account..." : "Create Account"}
       </button>
 
       <p className="text-center text-gray-600 mt-6">
@@ -140,7 +162,6 @@ function RegisterCard() {
           Login
         </button>
       </p>
-
     </div>
   );
 }
