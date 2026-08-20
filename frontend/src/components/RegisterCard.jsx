@@ -17,6 +17,11 @@ function RegisterCard() {
     confirmPassword: "",
   });
 
+  const handleGoogleLogin = () => {
+    window.location.href =
+      "http://localhost:8000/auth/google/login";
+  };
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -82,7 +87,13 @@ function RegisterCard() {
         Start summarizing videos in seconds.
       </p>
 
-      <button className="w-full mt-8 border border-gray-300 rounded-xl py-3 flex items-center justify-center gap-3 font-medium hover:bg-gray-50 transition">
+      <button
+        onClick={() => {
+          window.location.href =
+            "http://localhost:8000/auth/google/login";
+        }}
+        className="w-full mt-8 border border-gray-300 rounded-xl py-3 flex items-center justify-center gap-3 font-medium hover:bg-gray-50 transition duration-300"
+      >
         <FcGoogle size={22} />
         Continue with Google
       </button>

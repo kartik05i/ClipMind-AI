@@ -5,10 +5,22 @@ from app.database.session import get_db
 
 from app.models.video import Video
 from app.models.transcript import Transcript
+from app.models.user import User
 
 from app.services.ffmpeg_service import extract_audio
 from app.services.whisper_service import generate_transcript
 from app.services.transcript_service import save_transcript
+
+from app.core.dependencies import (
+    get_current_user,
+    require_role
+)
+
+from app.core.roles import (
+    EDUCATOR,
+    CONTENT_CREATOR,
+    ADMINISTRATOR,
+)
 
 router = APIRouter(
     prefix="/transcripts",
@@ -19,7 +31,14 @@ router = APIRouter(
 @router.post("/generate/{video_id}")
 def generate_video_transcript(
     video_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_role([
+            EDUCATOR,
+            CONTENT_CREATOR,
+            ADMINISTRATOR,
+        ])
+    )
 ):
 
     # Check if video exists

@@ -1,46 +1,171 @@
 import {
   LayoutDashboard,
-  Upload,
   Brain,
-  FileText,
   Video,
-  History,
+  BookOpen,
+  Bookmark,
+  Upload,
+  BarChart3,
+  FileText,
+  Users,
+  Settings,
+  Activity,
+  Cpu,
+  ClipboardList,
+  FolderCog,
 } from "lucide-react";
+
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
-  const menus = [
-  {
-    name: "Dashboard",
-    path: "/dashboard",
-    icon: <LayoutDashboard size={20} />,
-  },
-  {
-    name: "Upload Video",
-    path: "/upload",
-    icon: <Upload size={20} />,
-  },
-  {
-    name: "Content Insights",
-    path: "/content-insights",
-    icon: <Brain size={20} />,
-  },
-  {
-    name: "Usage Reports",
-    path: "/usage-reports",
-    icon: <FileText size={20} />,
-  },
-  {
-    name: "My Videos",
-    path: "/my-videos",
-    icon: <Video size={20} />,
-  },
-  {
-    name: "Upload History",
-    path: "/upload-history",
-    icon: <History size={20} />,
-  },
-];
+  // Get logged-in user
+  const user = JSON.parse(
+    localStorage.getItem("user") || "{}"
+  );
+
+  const role = user.role;
+
+  // ================= ROLE-BASED MENUS =================
+
+  const roleMenus = {
+    // ================= LEARNER =================
+
+    Learner: [
+      {
+        name: "My Videos",
+        path: "/my-videos",
+        icon: <Video size={20} />,
+      },
+      {
+        name: "Content Insights",
+        path: "/content-insights",
+        icon: <Brain size={20} />,
+      },
+      {
+        name: "Learning History",
+        path: "/learning-history",
+        icon: <BookOpen size={20} />,
+      },
+      {
+        name: "Bookmarks",
+        path: "/bookmarks",
+        icon: <Bookmark size={20} />,
+      },
+    ],
+
+    // ================= EDUCATOR =================
+
+    Educator: [
+      {
+        name: "Upload Video",
+        path: "/upload",
+        icon: <Upload size={20} />,
+      },
+      {
+        name: "Manage Videos",
+        path: "/manage-videos",
+        icon: <FolderCog size={20} />,
+      },
+      {
+        name: "Content Insights",
+        path: "/content-insights",
+        icon: <Brain size={20} />,
+      },
+      {
+        name: "Learning Materials",
+        path: "/learning-materials",
+        icon: <FileText size={20} />,
+      },
+      {
+        name: "Classroom Analytics",
+        path: "/classroom-analytics",
+        icon: <BarChart3 size={20} />,
+      },
+      {
+        name: "Upload History",
+        path: "/upload-history",
+        icon: <BookOpen size={20} />,
+      },
+    ],
+
+    // ================= CONTENT CREATOR =================
+
+    "Content Creator": [
+      {
+        name: "Upload Video",
+        path: "/upload",
+        icon: <Upload size={20} />,
+      },
+      {
+        name: "Manage Videos",
+        path: "/manage-videos",
+        icon: <FolderCog size={20} />,
+      },
+      {
+        name: "Content Insights",
+        path: "/content-insights",
+        icon: <Brain size={20} />,
+      },
+      {
+        name: "Content Analytics",
+        path: "/content-analytics",
+        icon: <BarChart3 size={20} />,
+      },
+      {
+        name: "Upload History",
+        path: "/upload-history",
+        icon: <BookOpen size={20} />,
+      },
+    ],
+
+    // ================= ADMINISTRATOR =================
+
+    Administrator: [
+      {
+        name: "Dashboard",
+        path: "/dashboard",
+        icon: <LayoutDashboard size={20} />,
+      },
+      {
+        name: "User Management",
+        path: "/user-management",
+        icon: <Users size={20} />,
+      },
+      {
+        name: "Manage Videos",
+        path: "/manage-videos",
+        icon: <FolderCog size={20} />,
+      },
+      {
+        name: "Content Insights",
+        path: "/content-insights",
+        icon: <Brain size={20} />,
+      },
+      {
+        name: "Usage Reports",
+        path: "/usage-reports",
+        icon: <ClipboardList size={20} />,
+      },
+      {
+        name: "System Analytics",
+        path: "/system-analytics",
+        icon: <Activity size={20} />,
+      },
+      {
+        name: "Audit Logs",
+        path: "/audit-logs",
+        icon: <FileText size={20} />,
+      },
+      {
+        name: "Platform Settings",
+        path: "/platform-settings",
+        icon: <Settings size={20} />,
+      },
+    ],
+  };
+
+  // Get menu for the current user's role
+  const menus = roleMenus[role] || [];
 
   return (
     <div className="w-64 h-screen bg-white border-r border-gray-200">
@@ -58,6 +183,7 @@ const Sidebar = () => {
             }
           >
             {menu.icon}
+
             <span>{menu.name}</span>
           </NavLink>
         ))}

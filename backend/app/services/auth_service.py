@@ -7,6 +7,7 @@ from app.core.security import hash_password, verify_password
 from app.utils.jwt import create_access_token
 
 
+
 def register_user(
     db: Session,
     user: RegisterRequest
@@ -59,3 +60,53 @@ def login_user(
         "access_token": access_token,
         "token_type": "bearer"
     }
+
+def forgot_password(
+    email: str,
+    db: Session
+):
+
+    user = db.query(User).filter(
+        User.email == email
+    ).first()
+
+    if not user:
+        return None
+
+    return user
+
+
+def reset_password(
+    email: str,
+    new_password: str,
+    db: Session
+):
+
+    user = db.query(User).filter(
+        User.email == email
+    ).first()
+
+    if not user:
+        return None
+
+    user.hashed_password = hash_password(
+        new_password
+    )
+
+    db.commit()
+    db.refresh(user)
+
+    return user
+
+def update_profile(
+    user: User,
+    name: str,
+    db: Session
+):
+
+    user.name = name
+
+    db.commit()
+    db.refresh(user)
+
+    return user

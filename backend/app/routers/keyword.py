@@ -9,6 +9,15 @@ from app.models.keyword import Keyword
 
 from app.services.keyword_service import extract_keywords
 
+from app.models.user import User
+
+from app.core.dependencies import require_role
+
+from app.core.roles import (
+    CONTENT_CREATOR,
+    ADMINISTRATOR,
+)
+
 router = APIRouter(
     prefix="/keywords",
     tags=["Keywords"]
@@ -18,7 +27,13 @@ router = APIRouter(
 @router.post("/generate/{video_id}")
 def generate_keywords(
     video_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_role([
+            CONTENT_CREATOR,
+            ADMINISTRATOR,
+        ])
+    )
 ):
     """
     Generate keywords from transcript.

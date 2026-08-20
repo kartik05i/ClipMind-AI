@@ -11,6 +11,14 @@ from app.services.summary_service import (
     save_summary,
 )
 
+from app.core.dependencies import require_role
+from app.core.roles import (
+    EDUCATOR,
+    CONTENT_CREATOR,
+    ADMINISTRATOR,
+)
+from app.models.user import User
+
 router = APIRouter(
     prefix="/summaries",
     tags=["Summaries"]
@@ -20,7 +28,14 @@ router = APIRouter(
 @router.post("/generate/{video_id}")
 def generate_video_summary(
     video_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_role([
+            EDUCATOR,
+            CONTENT_CREATOR,
+            ADMINISTRATOR,
+        ])
+    )
 ):
     # Check if transcript exists
     transcript = (

@@ -1,0 +1,18 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: clipmind-backend-container
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: clipmind-frontend-container
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend

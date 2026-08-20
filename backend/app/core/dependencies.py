@@ -34,14 +34,23 @@ def get_current_user(
     except JWTError:
         raise credentials_exception
 
-    user = db.query(User).filter(
-        User.email == email
-    ).first()
+    user = (
+        db.query(User)
+        .filter(User.email == email)
+        .first()
+    )
 
     if user is None:
         raise credentials_exception
 
+    if not user.is_active:
+        raise HTTPException(
+            status_code=403,
+            detail="Inactive user"
+        )
+
     return user
+
 
 def require_role(allowed_roles: list):
 
@@ -52,7 +61,7 @@ def require_role(allowed_roles: list):
         if current_user.role not in allowed_roles:
             raise HTTPException(
                 status_code=403,
-                detail="Access denied"
+                detail="You do not have permission to access this resource"
             )
 
         return current_user

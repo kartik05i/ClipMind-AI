@@ -13,6 +13,15 @@ from app.services.whisper_service import generate_transcript
 from app.services.keymoment_service import detect_key_moments
 from app.services.highlight_service import generate_highlight_report
 
+from app.models.user import User
+
+from app.core.dependencies import require_role
+
+from app.core.roles import (
+    CONTENT_CREATOR,
+    ADMINISTRATOR,
+)
+
 router = APIRouter(
     prefix="/highlights",
     tags=["Highlights"]
@@ -22,7 +31,13 @@ router = APIRouter(
 @router.post("/generate/{video_id}")
 def generate_highlights(
     video_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_role([
+            CONTENT_CREATOR,
+            ADMINISTRATOR,
+        ])
+    )
 ):
 
     # Check video

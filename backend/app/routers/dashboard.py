@@ -7,6 +7,14 @@ from app.services.dashboard_service import (
     get_usage_report
 )
 
+from app.models.user import User
+from app.core.dependencies import require_role
+from app.core.roles import (
+    EDUCATOR,
+    CONTENT_CREATOR,
+    ADMINISTRATOR,
+)
+
 router = APIRouter(
     prefix="/dashboard",
     tags=["Dashboard"]
@@ -15,21 +23,25 @@ router = APIRouter(
 
 @router.get("/analytics")
 def dashboard_analytics(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_role([
+            EDUCATOR,
+            CONTENT_CREATOR,
+            ADMINISTRATOR,
+        ])
+    )
 ):
-    """
-    Return analytics dashboard data.
-    """
-
     return get_dashboard_data(db)
 
 
 @router.get("/usage-report")
 def usage_report(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_role([
+            ADMINISTRATOR,
+        ])
+    )
 ):
-    """
-    Return usage report data.
-    """
-
     return get_usage_report(db)

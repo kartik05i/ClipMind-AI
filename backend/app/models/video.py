@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
@@ -19,6 +19,12 @@ class Video(Base):
     file_size = Column(Integer, nullable=False)
 
     status = Column(String, default="Uploaded")
+
+    # Hide / Unhide video
+    is_hidden = Column(
+        Boolean,
+        default=False
+    )
 
     uploaded_at = Column(
         DateTime(timezone=True),

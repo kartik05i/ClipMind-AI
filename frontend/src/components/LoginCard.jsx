@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 
-import { loginUser } from "../services/authService";
+import {
+  loginUser,
+  getCurrentUser,
+} from "../services/authService";
 
 function LoginCard() {
   const navigate = useNavigate();
@@ -17,6 +20,11 @@ function LoginCard() {
       return;
     }
 
+  const handleGoogleLogin = () => {
+  window.location.href =
+    "http://localhost:8000/auth/google/login";
+};
+
     try {
       setLoading(true);
 
@@ -25,9 +33,27 @@ function LoginCard() {
         password
       );
 
+      const user = await getCurrentUser();
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(user)
+      );
+
       alert("Login Successful!");
 
-      navigate("/dashboard");
+      if (user.role === "Administrator") {
+        navigate("/dashboard");
+      } else if (user.role === "Learner") {
+        navigate("/my-videos");
+      } else if (user.role === "Educator") {
+        navigate("/upload");
+      } else if (user.role === "Content Creator") {
+        navigate("/upload");
+      } else {
+        navigate("/");
+      }
+      
     } catch (error) {
       console.error(error);
 
@@ -52,8 +78,13 @@ function LoginCard() {
         Sign in to continue to ClipMind AI
       </p>
 
-      {/* Google Button */}
-      <button className="w-full mt-8 border border-gray-300 rounded-xl py-3 flex items-center justify-center gap-3 font-medium hover:bg-gray-50 transition duration-300">
+      <button
+        onClick={() => {
+          window.location.href =
+            "http://localhost:8000/auth/google/login";
+        }}
+        className="w-full mt-8 border border-gray-300 rounded-xl py-3 flex items-center justify-center gap-3 font-medium hover:bg-gray-50 transition duration-300"
+      >
         <FcGoogle size={22} />
         Continue with Google
       </button>

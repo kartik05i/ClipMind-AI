@@ -46,3 +46,14 @@ backend/processed/
 # ==========================
 
 *.zip
+
+# Root dependencies
+node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Backup files
+*-backup.txt
+*-old.txt
