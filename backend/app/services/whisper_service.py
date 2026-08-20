@@ -1,27 +1,17 @@
 from faster_whisper import WhisperModel
 
-model = None
-
-
-def get_model():
-    global model
-
-    if model is None:
-        model = WhisperModel(
-            "base",
-            device="cpu",
-            compute_type="int8"
-        )
-
-    return model
+# Load the model once
+model = WhisperModel(
+    "base",
+    device="cpu",
+    compute_type="int8"
+)
 
 
 def generate_transcript(audio_path: str):
     """
     Generate transcript along with timestamps.
     """
-
-    model = get_model()
 
     segments, info = model.transcribe(audio_path)
 
