@@ -77,7 +77,7 @@ Frontend Interface → API Service Layer → FastAPI Backend → Routers → Ser
 - **Processing Layer** — FFmpeg-based media prep, Whisper-based transcription, downstream AI services
 - **Service & Data Layer** — feature-specific routers, dedicated services, PostgreSQL data layer
 
-Full architecture diagram available in [`docs/ClipMind_AI_Project_Documentation_Final.pdf`](docs/ClipMind_AI_Project_Documentation_Final.pdf).
+Full architecture diagram available in [`docs/ClipMind_AI_Project_Documentation (2).pdf`](docs/ClipMind_AI_Project_Documentation (2).pdf).
 
 ## Project Structure
 
@@ -117,7 +117,7 @@ ClipMind-AI/
 │   └── package.json
 │
 └── docs/
-    └── ClipMind_AI_Project_Documentation_Final.pdf
+    └── ClipMind_AI_Project_Documentation (2).pdf
 ```
 
 ## Getting Started
@@ -189,7 +189,7 @@ Full write-up of each issue is in the project documentation.
 ## Documentation
 
 Full project documentation — including problem statement, objectives, system architecture, module breakdown, implementation details, and challenges — is available at:
-[`docs/ClipMind_AI_Project_Documentation_Final.pdf`](docs/ClipMind_AI_Project_Documentation_Final.pdf)
+[`docs/CClipMind_AI_Project_Documentation (2).pdf`](docs/ClipMind_AI_Project_Documentation (2).pdf)
 
 ## License
 
